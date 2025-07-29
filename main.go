@@ -9,10 +9,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-const securityToken = ""
-
 func Init() {
-	discord, err := discordgo.New("Bot " + securityToken)
+	cfg := ParseConfig()
+
+	discord, err := discordgo.New("Bot " + cfg.Discord.SecurityToken)
 	if err != nil {
 		log.Fatal(err)
 	}
