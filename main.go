@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"legends-pulse/commands"
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -44,5 +46,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	switch {
 	case message.Content == "~test":
 		discord.ChannelMessageSend(message.ChannelID, "response")
+	case strings.Contains(message.Content, "$character"):
+		commands.HandleCharacterRequest(discord, message)
 	}
 }
