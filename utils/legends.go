@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -38,4 +39,17 @@ func ParseCharacterJSON(username string) (Player, error) {
 	json.Unmarshal(body, &data)
 
 	return data, nil
+}
+
+// return bytebuf of character based on url
+func ParseChracterImage(url string) (*bytes.Buffer, error) {
+	var buf *bytes.Buffer
+	resp, err := http.Get(url)
+	if err != nil {
+		return buf, fmt.Errorf("this character does not exist")
+	}
+	imgBytes, _ := io.ReadAll(resp.Body)
+	imgBuf := bytes.NewBuffer(imgBytes)
+
+	return imgBuf, nil
 }
