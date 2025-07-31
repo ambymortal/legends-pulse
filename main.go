@@ -11,7 +11,11 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func Init() {
+var commandHandlers = map[string]func(session *discordgo.Session, message *discordgo.MessageCreate){
+	"$character": commands.HandleCharacterRequest,
+}
+
+func main() {
 	cfg := ParseConfig()
 
 	discord, err := discordgo.New("Bot " + cfg.Discord.SecurityToken)
@@ -35,18 +39,20 @@ func Init() {
 	defer discord.Close()
 }
 
-func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
-
+func newMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 	// Ignore bot messages
-	if message.Author.ID == discord.State.User.ID {
+	if message.Author.ID == session.State.User.ID {
 		return
 	}
 
-	// test command
-	switch {
-	case message.Content == "~test":
-		discord.ChannelMessageSend(message.ChannelID, "response")
-	case strings.Contains(message.Content, "$character"):
-		commands.HandleCharacterRequest(discord, message)
+	fields := strings.Fields(message.Content)
+	if len(fields) == 0 {
+		return
+	}
+
+	command := fields[0]
+	handler, exists := commandHandlers[command]
+	if exists {
+		handler(session, message)
 	}
 }
