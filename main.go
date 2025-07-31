@@ -45,6 +45,11 @@ func newMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 		return
 	}
 
+	// ignore messages that dont start with our command prefix
+	if !strings.HasPrefix(message.Content, "$") {
+		return
+	}
+
 	fields := strings.Fields(message.Content)
 	if len(fields) == 0 {
 		return
