@@ -12,7 +12,10 @@ import (
 )
 
 var commandHandlers = map[string]func(session *discordgo.Session, message *discordgo.MessageCreate){
-	"$character": commands.HandleCharacterRequest,
+	"$character":    commands.HandleCharacterRequest,
+	"$addmember":    commands.HandleAddCharacter,
+	"$addcharacter": commands.HandleAddCharacter,
+	"$addplayer":    commands.HandleAddCharacter,
 }
 
 func main() {
