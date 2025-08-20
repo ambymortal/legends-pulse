@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"legends-pulse/commands"
+	"legends-pulse/config"
 	"log"
 	"os"
 	"os/signal"
@@ -19,7 +20,7 @@ var commandHandlers = map[string]func(session *discordgo.Session, message *disco
 }
 
 func main() {
-	cfg := ParseConfig()
+	cfg := config.ParseConfig()
 
 	discord, err := discordgo.New("Bot " + cfg.Discord.SecurityToken)
 	if err != nil {

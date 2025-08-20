@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"legends-pulse/config"
 	"legends-pulse/utils"
 	"log"
 	"strings"
