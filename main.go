@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"legends-pulse/commands"
 	"legends-pulse/config"
+	"legends-pulse/pulse"
 	"log"
 	"os"
 	"os/signal"
@@ -29,6 +30,7 @@ func main() {
 
 	// event handlers
 	discord.AddHandler(newMessage)
+	pulse.LoadCurrentPlayerData()
 
 	// Open websocket
 	discord.Open()

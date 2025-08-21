@@ -90,3 +90,15 @@ func AddPlayer(user utils.Player) error {
 
 	return nil
 }
+
+func ConvertJsonToPlayer(player PlayerInfo) utils.Player {
+	return utils.Player{
+		Guild:  player.Guild,
+		Name:   player.Name,
+		Level:  player.Level,
+		Job:    player.Job,
+		Quests: player.Quests,
+		Cards:  player.Cards,
+		Fame:   player.Fame,
+	}
+}
