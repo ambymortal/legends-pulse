@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"legends-pulse/config"
 	"legends-pulse/utils"
+	"log"
 	"time"
 )
 
@@ -17,7 +18,7 @@ var ticker *time.Ticker
 
 // Load all JSON player entries into currentData
 // load all player names into ValidNames
-func (pd *PlayerData) loadDataFromJSON() ([]utils.Player, error) {
+func (pd *PlayerData) loadDataFromJSON() error {
 	cfg := config.ParseConfig()
 
 	for _, player := range cfg.Players {
@@ -26,7 +27,7 @@ func (pd *PlayerData) loadDataFromJSON() ([]utils.Player, error) {
 		pd.ValidNames = append(pd.ValidNames, p.Name)
 	}
 
-	return pd.CurrentData, nil
+	return nil
 }
 
 // generate new player data for all names included in ValidNames
@@ -58,8 +59,14 @@ func StartMemberUpdateTask() {
 	go func() {
 		for range ticker.C {
 			// load both sets of data in prep to compare them
-			data.loadDataFromJSON()
-			data.populateNewPlayerData()
+			if err := data.loadDataFromJSON(); err != nil {
+				log.Printf("error in loading current member data: %s", err)
+				continue
+			}
+			if err := data.populateNewPlayerData(); err != nil {
+				log.Printf("error in generating new member data: %s", err)
+				continue
+			}
 
 			// clear data so we can do it all again every 15 minutes
 			data.clearData()

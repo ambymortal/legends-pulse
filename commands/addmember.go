@@ -13,9 +13,13 @@ func HandleAddCharacter(session *discordgo.Session, message *discordgo.MessageCr
 	msgSplit := strings.SplitAfter(message.Content, " ")
 
 	// verify if new member is a valid character
-	playerInfo, _ := utils.ParseCharacterJSON(msgSplit[1])
-	err := config.AddPlayer(playerInfo)
+	playerInfo, err := utils.ParseCharacterJSON(msgSplit[1])
 	if err != nil {
+		session.ChannelMessage(message.ChannelID, err.Error())
+		return
+	}
+	err2 := config.AddPlayer(playerInfo)
+	if err2 != nil {
 		log.Fatal(err)
 	}
 
