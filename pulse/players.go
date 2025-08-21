@@ -5,6 +5,7 @@ import (
 	"legends-pulse/config"
 	"legends-pulse/utils"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type PlayerData struct {
 	CurrentData []utils.Player
 	NewData     []utils.Player
 	ValidNames  []string
+	mu          sync.Mutex
 }
 
 var ticker *time.Ticker
@@ -58,6 +60,8 @@ func StartMemberUpdateTask() {
 
 	go func() {
 		for range ticker.C {
+			data.mu.Lock()
+
 			// load both sets of data in prep to compare them
 			if err := data.loadDataFromJSON(); err != nil {
 				log.Printf("error in loading current member data: %s", err)
@@ -75,6 +79,8 @@ func StartMemberUpdateTask() {
 
 			// clear data so we can do it all again every 15 minutes
 			data.clearData()
+
+			data.mu.Unlock()
 		}
 	}()
 }
