@@ -30,7 +30,7 @@ func main() {
 
 	// event handlers
 	discord.AddHandler(newMessage)
-	pulse.LoadCurrentPlayerData()
+	pulse.StartMemberUpdateTask()
 
 	// Open websocket
 	discord.Open()
