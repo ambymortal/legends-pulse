@@ -68,10 +68,74 @@ func StartMemberUpdateTask() {
 				continue
 			}
 
+			events := data.compare()
+			if len(events) != 0 {
+				// create posts for all events
+			}
+
 			// clear data so we can do it all again every 15 minutes
 			data.clearData()
 		}
 	}()
+}
+
+// compare the CurrentData and NewData looking for differences
+// when a difference between data is large enough an Event is added to the diffs var
+// CARD -> every 50 cards an event achievement is generated
+// FAME -> ever 50 fame an event achievement is generated
+// JOB -> all job changed generate an event achievement
+// LEVEL -> all level changes generate an event achievement starting at level 30
+// QUEST -> every 50 quests an event achievement is generated
+func (pd *PlayerData) compare() []Event {
+	var diffs []Event
+	for _, currentData := range pd.CurrentData {
+		for _, newData := range pd.NewData {
+			if currentData.Name == newData.Name {
+				// cards
+				if (currentData.Cards / 50) < (newData.Cards / 50) {
+					diffs = append(diffs, Event{
+						Name:        currentData.Name,
+						Achievement: fmt.Sprintf("%s has collected %v cards!", currentData.Name, (newData.Cards/50)*50),
+					})
+				}
+				// fame
+				if (currentData.Fame / 50) < (newData.Fame / 50) {
+					diffs = append(diffs, Event{
+						Name:        currentData.Name,
+						Achievement: fmt.Sprintf("%s has reached %v fame!", currentData.Name, (newData.Fame/50)*50),
+					})
+				}
+				// job
+				if currentData.Job != newData.Job {
+					diffs = append(diffs, Event{
+						Name:        currentData.Name,
+						Achievement: fmt.Sprintf("%s has advanced to %s!", currentData.Name, newData.Job),
+					})
+				}
+				// level
+				if currentData.Level != newData.Level && newData.Level >= 30 {
+					// only send level up posts if the player is at least level 30
+					diffs = append(diffs, Event{
+						Name:        currentData.Name,
+						Achievement: fmt.Sprintf("%s has reached level %v!", currentData.Name, newData.Level),
+					})
+				}
+				// quest
+				if (currentData.Quests / 50) < (newData.Quests / 50) {
+					// display in multiples of 50
+					diffs = append(diffs, Event{
+						Name:        currentData.Name,
+						Achievement: fmt.Sprintf("%s has completed %v quests!", currentData.Name, (newData.Quests/50)*50),
+					})
+				}
+			}
+		}
+	}
+
+	if len(diffs) != 0 {
+		fmt.Printf("Differences to be posted %s", diffs)
+	}
+	return diffs
 }
 
 func (pd *PlayerData) clearData() {
