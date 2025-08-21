@@ -15,7 +15,7 @@ func HandleCharacterRequest(session *discordgo.Session, message *discordgo.Messa
 
 	playerInfo, err := utils.ParseCharacterJSON(msgSplit[1])
 	if err != nil {
-		session.ChannelMessage(message.ChannelID, err.Error())
+		utils.SendErrorMessage(session, message.ChannelID, err)
 		return
 	}
 	imgUrl := fmt.Sprintf("https://maplelegends.com/api/getavatar?name=%s", playerInfo.Name)
@@ -29,15 +29,5 @@ func HandleCharacterRequest(session *discordgo.Session, message *discordgo.Messa
 
 	imgBuf, _ := utils.ParseChracterImage(imgUrl)
 
-	session.ChannelMessageSendComplex(message.ChannelID, &discordgo.MessageSend{
-		Embed: &discordgo.MessageEmbed{
-			Title:       playerInfo.Name,
-			Description: builder.String(),
-			Color:       0x2cdaca,
-		},
-		File: &discordgo.File{
-			Name:   "output.png",
-			Reader: imgBuf,
-		},
-	})
+	utils.SendMessageWithImage(session, message.ChannelID, playerInfo.Name, builder.String(), imgBuf.Bytes())
 }
