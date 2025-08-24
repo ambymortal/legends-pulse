@@ -19,6 +19,7 @@ var commandHandlers = map[string]func(session *discordgo.Session, message *disco
 	"$addcharacter": commands.HandleAddCharacter,
 	"$addplayer":    commands.HandleAddCharacter,
 	"$playerlist":   commands.HandlePlayerList,
+	"$startfeed":    pulse.SetFeedChannel,
 }
 
 func main() {

@@ -74,12 +74,11 @@ func StartMemberUpdateTask() {
 
 			events := data.compare()
 			if len(events) != 0 {
-				// create posts for all events
+				CreatePosts(events)
 			}
 
 			// clear data so we can do it all again every 15 minutes
 			data.clearData()
-
 			data.mu.Unlock()
 		}
 	}()
