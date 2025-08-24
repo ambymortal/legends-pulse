@@ -7,9 +7,11 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"golang.org/x/text/collate"
+	"golang.org/x/text/language"
 )
 
-var currentList []utils.Player
+var alphabeticalList []string
 
 func HandlePlayerList(session *discordgo.Session, message *discordgo.MessageCreate) {
 	var formattedList strings.Builder
@@ -17,15 +19,19 @@ func HandlePlayerList(session *discordgo.Session, message *discordgo.MessageCrea
 	go func() {
 		loadPlayersFromConfig()
 
-		formattedList.WriteString(fmt.Sprintf("Total Members: %v\n\n", len(currentList)))
+		// sort player names into alphabetical order
+		c := collate.New(language.English, collate.IgnoreCase)
+		c.SortStrings(alphabeticalList)
+
+		formattedList.WriteString(fmt.Sprintf("Total Members: %v\n\n", len(alphabeticalList)))
 		formattedList.WriteString("```")
-		for _, char := range currentList {
-			formattedList.WriteString(fmt.Sprintf("%v\r\n", char))
+		for _, ign := range alphabeticalList {
+			formattedList.WriteString(fmt.Sprintf("%v\r\n", ign))
 		}
 		formattedList.WriteString("```")
 
 		utils.SendMessage(session, message.ChannelID, "Player List", formattedList.String())
-		clear()
+		alphabeticalList = nil
 	}()
 }
 
@@ -34,10 +40,6 @@ func loadPlayersFromConfig() {
 
 	for _, p := range cfg.Players {
 		player := config.ConvertJsonToPlayer(p)
-		currentList = append(currentList, player)
+		alphabeticalList = append(alphabeticalList, player.Name)
 	}
-}
-
-func clear() {
-	currentList = nil
 }
