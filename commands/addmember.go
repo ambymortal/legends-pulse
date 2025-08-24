@@ -9,7 +9,7 @@ import (
 )
 
 func HandleAddCharacter(session *discordgo.Session, message *discordgo.MessageCreate) {
-	msgSplit := strings.SplitAfter(message.Content, " ")
+	msgSplit := strings.Fields(message.Content)
 
 	// verify if new member is a valid character
 	playerInfo, err := utils.ParseCharacterJSON(msgSplit[1])

@@ -11,7 +11,7 @@ import (
 func HandleCharacterRequest(session *discordgo.Session, message *discordgo.MessageCreate) {
 	var builder strings.Builder
 	msgLower := strings.ToLower(message.Content)
-	msgSplit := strings.SplitAfter(msgLower, " ")
+	msgSplit := strings.Fields(msgLower)
 
 	playerInfo, err := utils.ParseCharacterJSON(msgSplit[1])
 	if err != nil {
