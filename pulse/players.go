@@ -21,6 +21,7 @@ var ticker *time.Ticker
 // Load all JSON player entries into currentData
 // load all player names into ValidNames
 func (pd *PlayerData) loadDataFromJSON() error {
+	pd.clearData()
 	cfg := config.ParseConfig()
 
 	for _, player := range cfg.Players {
