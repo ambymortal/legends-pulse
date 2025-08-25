@@ -14,12 +14,15 @@ import (
 )
 
 var commandHandlers = map[string]func(session *discordgo.Session, message *discordgo.MessageCreate){
-	"$character":    commands.HandleCharacterRequest,
-	"$addmember":    commands.HandleAddCharacter,
-	"$addcharacter": commands.HandleAddCharacter,
-	"$addplayer":    commands.HandleAddCharacter,
-	"$playerlist":   commands.HandlePlayerList,
-	"$startfeed":    pulse.SetFeedChannel,
+	"$character":       commands.HandleCharacterRequest,
+	"$addmember":       commands.HandleAddCharacter,
+	"$addcharacter":    commands.HandleAddCharacter,
+	"$addplayer":       commands.HandleAddCharacter,
+	"$removemember":    commands.HandleMemberRemoval,
+	"$removecharacter": commands.HandleMemberRemoval,
+	"$removeplayer":    commands.HandleMemberRemoval,
+	"$playerlist":      commands.HandlePlayerList,
+	"$startfeed":       pulse.SetFeedChannel,
 }
 
 func main() {

@@ -2,9 +2,11 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"legends-pulse/utils"
 	"log"
 	"os"
+	"strings"
 )
 
 // player specific info
@@ -82,6 +84,35 @@ func AddPlayer(user utils.Player) error {
 
 	// Append new member to existing member slice
 	config.Players = append(config.Players, newPlayer)
+
+	// Save the updated configuration to the JSON file
+	if err := saveConfig(config); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemovePlayer(name string) error {
+	config := ParseConfig()
+
+	var players *[]PlayerInfo
+	players = &config.Players
+
+	index := -1
+	for i, member := range *players {
+		if strings.EqualFold(member.Name, name) {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		return fmt.Errorf("player %s not found", name)
+	}
+
+	// Remove the member from the slice
+	*players = append((*players)[:index], (*players)[index+1:]...)
 
 	// Save the updated configuration to the JSON file
 	if err := saveConfig(config); err != nil {
