@@ -35,7 +35,7 @@ func CreatePosts(events []Event) {
 	for _, event := range events {
 		charUrl := fmt.Sprintf("https://maplelegends.com/api/getavatar?name=%s", event.Name)
 
-		imgBuf, err := utils.ParseChracterImage(charUrl)
+		imgBuf, err := utils.ParseCharacterImage(charUrl)
 		if err != nil {
 			log.Println("Error occurred:", err)
 			continue

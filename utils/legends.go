@@ -42,13 +42,18 @@ func ParseCharacterJSON(username string) (Player, error) {
 }
 
 // return bytebuf of character based on url
-func ParseChracterImage(url string) (*bytes.Buffer, error) {
-	var buf *bytes.Buffer
+func ParseCharacterImage(url string) (*bytes.Buffer, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		return buf, fmt.Errorf("this character does not exist")
+		return nil, err
 	}
-	imgBytes, _ := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	imgBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read image data: %w", err)
+	}
+
 	imgBuf := bytes.NewBuffer(imgBytes)
 
 	return imgBuf, nil

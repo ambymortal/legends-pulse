@@ -27,7 +27,11 @@ func HandleCharacterRequest(session *discordgo.Session, message *discordgo.Messa
 	builder.WriteString(fmt.Sprintf("Job: %s\n", playerInfo.Job))
 	builder.WriteString(fmt.Sprintf("Guild: %s\n", playerInfo.Guild))
 
-	imgBuf, _ := utils.ParseChracterImage(imgUrl)
+	imgBuf, err := utils.ParseCharacterImage(imgUrl)
+	if err != nil {
+		utils.SendErrorMessage(session, message.ChannelID, err)
+		return
+	}
 
 	utils.SendMessageWithImage(session, message.ChannelID, playerInfo.Name, builder.String(), imgBuf.Bytes())
 }
