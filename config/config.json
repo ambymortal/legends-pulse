@@ -2,7 +2,5 @@
     "discord": {
         "securityToken": ""
     },
-    "players": {
-
-    }
+    "players": []
 }

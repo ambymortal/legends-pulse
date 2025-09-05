@@ -35,7 +35,7 @@ type discordConfig struct {
 }
 
 func ParseConfig() *Config {
-	jsonFile, err := os.Open("config.json")
+	jsonFile, err := os.Open("config/config.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func ParseConfig() *Config {
 }
 
 func saveConfig(config *Config) error {
-	jsonFile, err := os.Create("config.json")
+	jsonFile, err := os.Create("config/config.json")
 	if err != nil {
 		return err
 	}
